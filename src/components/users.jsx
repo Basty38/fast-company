@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import api from "../api/index.js"
 
 const Users = () => {
-	const [users, setUsers] = useState(api.users.fetchAll());
+  const [users, setUsers] = useState(api.users.fetchAll());
+  
+  const handleDelete = (userId) => {
+    setUsers((prevState) => prevState.filter(user => user._id !== userId))
+  };
 
-
-	const handleDelete = (userId) => {
-		setUsers((prevState) => prevState.filter(user => user._id !== userId))
-	};
-
-
-	const renderPhrase = (number) => {
-		let stringUsers = '';
-		switch(true) {
-			case number > 4 && number <= 14:
+  const renderPhrase = (number) => {
+    let stringUsers = '';
+    
+    switch(true) {
+      case number > 4 && number <= 14:
 				stringUsers = 'человек тусанут';
 				break;
 			case number > 1 && number < 5:
@@ -23,8 +22,9 @@ const Users = () => {
 				stringUsers = 'человек тусанет';
 				break;
 		}
-		return stringUsers;
-	};
+      
+    return stringUsers;
+  };
 
 
 	const BustingQualities = (array) => {
@@ -33,10 +33,9 @@ const Users = () => {
 		})
 	}
 
-
-	let QuantityUsers = (array) => {
+	const QuantityUsers = (array) => {
 		return array.map((user) => (
-			<tr key = {user._id}>
+			<tr key={user._id}>
 				<td>{user.name}</td>
 				<td>{BustingQualities(user.qualities)}</td>
 				<td>{user.profession.name}</td>
@@ -47,12 +46,10 @@ const Users = () => {
 		))
 	};
 
-
-
 	return (
 		<>
 			<h2 className={'badge ' + (users.length > 0 ? 'bg-primary' : 'bg-danger')}>
-				{users.length > 0 
+				{users.length > 0  // Личноя бы вынес это все в отдельную функцию 
 					? users.length + ' ' + renderPhrase(users.length) + ' с тобой сегодня'
 					: 'Никто с тобой не тусанет'}
 			</h2>
