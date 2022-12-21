@@ -51,13 +51,11 @@ const User = ({
 
 User.propTypes = {
     name: PropTypes.string.isRequired,
-    qualities: PropTypes.object.isRequired,
-    map: PropTypes.func.isRequired,
-    qualitie: PropTypes.object.isRequired,
+    qualities: PropTypes.array,
     profession: PropTypes.object.isRequired,
     completedMeetings: PropTypes.number.isRequired,
     rate: PropTypes.number.isRequired,
-    bookmark: PropTypes.bool.isRequired,
+    bookmark: PropTypes.bool,
     onToggleBookMark: PropTypes.func.isRequired,
     _id: PropTypes.string.isRequired,
     onDelete: PropTypes.func.isRequired
