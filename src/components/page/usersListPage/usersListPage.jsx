@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination.jsx";
-import { paginate } from "../utils/paginate.js";
-import api from "../api/index.js";
+import Pagination from "../../common/pagination.jsx";
+import { paginate } from "../../../utils/paginate.js";
+import api from "../../../api/index.js";
 import PropTypes from "prop-types";
-import GroupList from "./groupList.jsx";
-import SearchStatus from "./searchStatus.jsx";
-import UserTable from "./usersTable.jsx";
+import GroupList from "../../common/groupList.jsx";
+import SearchStatus from "../../ui/searchStatus.jsx";
+import UserTable from "../../ui/usersTable.jsx";
 import _ from "lodash";
 
-const Users = () => {
+const UsersListPage = () => {
     const pageSize = 8;
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
+    const [searchQuery, setSearchQuery] = useState("");
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({
         path: "name",
@@ -40,15 +41,21 @@ const Users = () => {
         );
     };
 
+    const handleSearchQuery = ({ target }) => {
+        setSelectedProf(undefined);
+        setSearchQuery(target.value);
+    };
+
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data));
     }, []);
 
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedProf]);
+    }, [selectedProf, searchQuery]);
 
     const handleProfessionSelect = (item) => {
+        if (searchQuery !== "") setSearchQuery("");
         setSelectedProf(item);
     };
 
@@ -56,13 +63,21 @@ const Users = () => {
         setCurrentPage(pageIndex);
     };
 
+    // Фильтрация по выбранной профессии и поиску
     if (users) {
-        const filteredUsers = selectedProf
+        const filteredUsers = searchQuery
             ? users.filter(
-                (user) =>
-                    JSON.stringify(user.profession) ===
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .indexOf(searchQuery.toLowerCase()) !== -1
+              )
+            : selectedProf
+            ? users.filter(
+                  (user) =>
+                      JSON.stringify(user.profession) ===
                       JSON.stringify(selectedProf)
-            )
+              )
             : users;
 
         const count = filteredUsers.length;
@@ -103,6 +118,13 @@ const Users = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <input
+                        type="text"
+                        name="searchQuery"
+                        placeholder="Search..."
+                        onChange={handleSearchQuery}
+                        value={searchQuery}
+                    />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
@@ -127,8 +149,8 @@ const Users = () => {
     return "loading...";
 };
 
-Users.propTypes = {
+UsersListPage.propTypes = {
     users: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default Users;
+export default UsersListPage;
