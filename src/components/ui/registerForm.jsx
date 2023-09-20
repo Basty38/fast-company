@@ -17,17 +17,54 @@ const RegisterForm = () => {
         licence: false
     });
 
-    const [qualities, setQualities] = useState({});
+    const [qualities, setQualities] = useState([]);
     const [errors, setErrors] = useState({});
     const [professions, setProfessions] = useState();
 
+    const getProfessionById = (id) => {
+        for (const prof of professions) {
+            if (prof.value === id) {
+                return { _id: prof.value, name: prof.label };
+            }
+        }
+    };
+
+    const getQualities = (elements) => {
+        const qualitiesArray = [];
+        for (const elem of elements) {
+            for (const quality in qualities) {
+                if (elem.value === qualities[quality].value) {
+                    qualitiesArray.push({
+                        _id: qualities[quality].value,
+                        name: qualities[quality].label,
+                        color: qualities[quality].color
+                    });
+                }
+            }
+        }
+
+        return qualitiesArray;
+    };
+
     useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfessions(data));
-        api.qualities.fetchAll().then((data) => setQualities(data));
+        api.professions.fetchAll().then((data) => {
+            const professionsList = Object.keys(data).map((professionName) => ({
+                label: data[professionName].name,
+                value: data[professionName]._id
+            }));
+            setProfessions(professionsList);
+        });
+        api.qualities.fetchAll().then((data) => {
+            const qualitiesList = Object.keys(data).map((optionName) => ({
+                label: data[optionName].name,
+                value: data[optionName]._id,
+                color: data[optionName].color
+            }));
+            setQualities(qualitiesList);
+        });
     }, []);
 
     const handleChange = (target) => {
-        console.log("target", target);
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
@@ -50,7 +87,12 @@ const RegisterForm = () => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        console.log("data", data);
+        const { profession, qualities } = data;
+        console.log({
+            ...data,
+            profession: getProfessionById(profession),
+            qualities: getQualities(qualities)
+        });
     };
 
     const validatorConfig = {
@@ -84,7 +126,8 @@ const RegisterForm = () => {
         },
         licence: {
             isRequired: {
-                message: "Вы не можете использовать наш сервис без лицензионного соглашения"
+                message:
+                    "Вы не можете использовать наш сервис без лицензионного соглашения"
             }
         }
     };
@@ -106,14 +149,17 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 error={errors.password}
             />
+
             <SelectField
                 label="Выберите вашу профессию"
                 defaultOption="Choose..."
+                name="profession"
                 options={professions}
                 value={data.profession}
                 onChange={handleChange}
                 error={errors.profession}
             />
+
             <RadioField
                 options={[
                     { name: "Male", value: "male" },
@@ -128,6 +174,7 @@ const RegisterForm = () => {
             <MultiSelectField
                 options={qualities}
                 onChange={handleChange}
+                defaultValue={data.qualities}
                 name="qualities"
                 label="Выберите ваши качества"
             />

@@ -9,8 +9,14 @@ export function validator(data, config) {
                 if (typeof data === "boolean") {
                     statusValidate = !data;
                 } else {
-                    statusValidate = data.trim() === "" || data.trim() === false;
+                    statusValidate =
+                        data.trim() === "" || data.trim() === false;
                 }
+                break;
+            }
+            case "isWhitespace": {
+                const whitespaceRegExp = /^[^\s]+$/g;
+                statusValidate = !whitespaceRegExp.test(data);
                 break;
             }
             case "isEmail": {
