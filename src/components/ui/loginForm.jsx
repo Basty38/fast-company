@@ -4,7 +4,11 @@ import TextField from "../common/form/textField.jsx";
 import CheckBoxField from "../common/form/checkBoxField.jsx";
 
 const LoginForm = () => {
-    const [data, setData] = useState({ email: "", password: "", stayOn: false });
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+        stayOn: false
+    });
     const [errors, setErrors] = useState({});
 
     const handleChange = (target) => {
@@ -45,6 +49,9 @@ const LoginForm = () => {
         password: {
             isRequired: {
                 message: "Пароль обязателен к заполнению"
+            },
+            isWhitespace: {
+                message: "Пароль не должен содержать пробельный символ"
             },
             isCapitalSymbol: {
                 message: "Пароль должен содержать хотя бы одну заглавную букву"
