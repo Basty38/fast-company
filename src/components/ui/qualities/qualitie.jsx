@@ -1,7 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useQualities } from "../../../hooks/useQualities";
 
-const Qualitie = ({ color, name, _id }) => {
+const Qualitie = ({ id }) => {
+    const { getQuality } = useQualities();
+    const { _id, color, name } = getQuality(id);
+
     return (
         <>
             {
@@ -14,9 +18,7 @@ const Qualitie = ({ color, name, _id }) => {
 };
 
 Qualitie.propTypes = {
-    color: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired
 };
 
 export default Qualitie;
