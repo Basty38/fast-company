@@ -9,25 +9,28 @@ import Login from "./layouts/login.jsx";
 import NotFound from "./components/not-found.jsx";
 import { ProfessionProvider } from "./hooks/useProfession.jsx";
 import { QualitiesProvider } from "./hooks/useQualities.jsx";
+import AuthProvider from "./hooks/useAuth.jsx";
 
 const App = () => {
     return (
         <>
-            <NavBar />
-            <QualitiesProvider>
-                <ProfessionProvider>
-                    <Switch>
-                        <Route exact path="/" component={MainPage} />
-                        <Route path="/login/:type?" component={Login} />
-                        <Route
-                            path="/users/:userId?/:edit?"
-                            component={Users}
-                        />
-                        <Route to="/404" component={NotFound} />
-                        <Redirect to="/404" />
-                    </Switch>
-                </ProfessionProvider>
-            </QualitiesProvider>
+            <AuthProvider>
+                <NavBar />
+                <QualitiesProvider>
+                    <ProfessionProvider>
+                        <Switch>
+                            <Route exact path="/" component={MainPage} />
+                            <Route path="/login/:type?" component={Login} />
+                            <Route
+                                path="/users/:userId?/:edit?"
+                                component={Users}
+                            />
+                            <Route to="/404" component={NotFound} />
+                            <Redirect to="/404" />
+                        </Switch>
+                    </ProfessionProvider>
+                </QualitiesProvider>
+            </AuthProvider>
             <ToastContainer />
         </>
     );
